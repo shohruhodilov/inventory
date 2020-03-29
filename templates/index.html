@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% block body %}
+    <br>
+    <div class="button-group">
+        <a href="{% url 'laptop_views' %}" class="btn btn-primary btn-md" role="button">Laptops</a>
+        <a href="{% url 'add_laptop' %}" class="btn btn-warning btn-sm" role="button">+</a>
+
+        <a href="{% url 'desktop_views' %}" class="btn btn-primary btn-md" role="button">Desktops</a>
+        <a href="{% url 'add_desktop' %}" class="btn btn-warning btn-sm" role="button">+</a>
+
+        <a href="{% url 'mobile_views' %}" class="btn btn-primary btn-md" role="button">Mobiles</a>
+        <a href="{% url 'add_mobile' %}" class="btn btn-warning btn-sm" role="button">+</a>
+    </div>
+<br>
+    <h2>Currently viewing {{ header }}</h2>
+    <table class="table table-hover">
+    <thead>
+    <tr>
+        <th>id</th>
+        <th>Model</th>
+        <th>Price</th>
+        <th>Status</th>
+        <th>Edit</th>
+        <th>Delete</th>
+
+
+    </tr>
+    </thead>
+
+    <tbody>
+    {% for item in items %}
+    <tr>
+        <td>{{ item.pk }}</td>
+        <td>{{ item.type }}</td>
+        <td>{{item.price}}</td>
+        <td>{{ item.status }}</td>
+        {% if header|lower == 'laptops' %}
+            <td> <a href="{% url 'edit_laptop' item.pk %}" class="btn btn-warning btn-sm" role="button">Edit</a> </td>
+            <td> <a href="{% url 'delete_laptop' item.pk %}" class="btn btn-outline-danger" role="button">Delete</a> </td>
+        {% elif header|lower == 'desktops' %}
+            <td> <a href="{% url 'edit_desktop' item.pk %}" class="btn btn-warning btn-sm" role="button">Edit</a> </td>
+            <td> <a href="{% url 'delete_desktop' item.pk %}" class="btn btn-outline-danger" role="button">Delete</a> </td>
+        {% else %}
+            <td> <a href="{% url 'edit_mobile' item.pk %}" class="btn btn-warning btn-sm" role="button">Edit</a> </td>
+            <td> <a href="{% url 'delete_mobile' item.pk %}" class="btn btn-outline-danger btn-sm" role="button">Delete</a> </td>
+        {% endif%}
+    </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+{% if items.paginator.num_pages > 1 %}
+<nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+        {% if items.paginator.num_pages != 1 %}
+            <li class="page-item"><a class="page-link" href="?page=1">First</a></li>
+        {% else %}
+            <li class="page-item disabled"><a class="page-link" href="#">First</a></li>
+        {% endif %}
+        {% if items.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page={{ items.previous_page_number }}">&laquo;</a></li>
+        {% else %}
+            <li class="page-item disabled"><a class="page-link" href="#">&laquo;</a></li>
+        {% endif %}
+        {% for i in items.paginator.page_range %}
+            {% if items.number == i %}
+                <li class="page-item active"><a class="page-link" href="#">{{ i }} <span class="sr-only">(current)</span></a></li>
+            {% elif items.number > i|add:"-5" and items.number < i|add:"+5"%}
+                <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+            {% endif %}
+        {% endfor %}
+        {% if items.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ items.next_page_number }}">&raquo;</a></li>
+        {% else %}
+            <li class="page-item disabled"><a class="page-link" href="#">&raquo;</a></li>
+        {% endif %}
+        {% if items.paginator.num_pages != items.number %}
+            <li class="page-item"><a class="page-link" href="?page={{ items.paginator.num_pages }}">Last</a></li>
+        {% else %}
+            <li class="page-item disabled"><a class="page-link" href="#">Last</a></li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+
+{#    {% if items.has_other_pages %}#}
+{#  <ul class="pagination">#}
+{#    {% if items.has_previous %}#}
+{#      <li><a href="?page={{ items.previous_page_number }}">&laquo;</a></li>#}
+{#    {% else %}#}
+{#      <li class="disabled"><span>&laquo;</span></li>#}
+{#    {% endif %}#}
+{#    {% for i in items.paginator.page_range %}#}
+{#      {% if items.number == i %}#}
+{#        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>#}
+{#      {% else %}#}
+{#        <li><a href="?page={{ i }}">{{ i }}</a></li>#}
+{#      {% endif %}#}
+{#    {% endfor %}#}
+{#    {% if items.has_next %}#}
+{#      <li><a href="?page={{ items.next_page_number }}">&raquo;</a></li>#}
+{#    {% else %}#}
+{#      <li class="disabled"><span>&raquo;</span></li>#}
+{#    {% endif %}#}
+{#  </ul>#}
+{#{% endif %}#}
+{% endblock %}
