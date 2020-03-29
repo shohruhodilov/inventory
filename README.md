@@ -1,2 +1,2 @@
-# shohruhodilov
+
 # inventory
